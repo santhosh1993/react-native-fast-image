@@ -50,6 +50,22 @@ RCT_EXPORT_METHOD(clearDiskCache:(RCTPromiseResolveBlock)resolve reject:(RCTProm
         resolve(NULL);
     }];
 }
+
+RCT_EXPORT_METHOD(getCachePath:(NSDictionary *)source
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    @try {
+        NSString *uri = source[@"uri"];
+        NSString *cacheKey = [[SDWebImageManager sharedManager] cacheKeyForURL:[NSURL URLWithString:uri]];
+        NSString *cachePath = [[SDImageCache sharedImageCache] cachePathForKey:cacheKey];
+        resolve(cachePath);
+    }
+    @catch (NSException *exception) {
+        reject(@"Error", exception.reason, nil);
+    }
+}
+
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params

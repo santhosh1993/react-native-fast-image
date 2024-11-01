@@ -82,4 +82,15 @@ class FastImageViewModuleImplementation {
         Glide.get(activity.getApplicationContext()).clearDiskCache();
         promise.resolve(null);
     }
+    public void getCachePath(ReadableMap source, Promise promise) {
+        try {
+            String uri = source.getString("uri");
+            DiskCache diskCache = Glide.get(getReactApplicationContext()).getDiskCache();
+            File cacheFile = diskCache.get(new ObjectKey(uri));
+            String cachePath = cacheFile != null ? cacheFile.getAbsolutePath() : null;
+            promise.resolve(cachePath);
+        } catch (Exception e) {
+            promise.reject("Error", e);
+        }
+    }
 }
